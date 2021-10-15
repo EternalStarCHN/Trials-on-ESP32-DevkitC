@@ -11,13 +11,22 @@ void WiFi_Connect(){
   }
 }
 
-void setup() {
-  Serial.begin(115200);
-  Serial.printf("connecting.. ");
-  WiFi_Connect();
-  Serial.println("WiFi connected");
-  Serial.println("IP address:");
-  Serial.println(WiFi.localIP());
+//获取当前时间（苏宁API）
+void getTime(){
+  String Url2 = "http://quan.suning.com/getSysTime.do";
+  DynamicJsonDocument doc2(1024);
+  HTTPClient http2;
+  http2.begin(Url2);
+  int httpCode = http2.GET();
+  if(httpCode>0){
+    //Serial.printf("\r\nhttp get code:%d \r\n",httpCode);
+    if(httpCode = HTTP_CODE_OK){
+    deserializeJson(doc2,http2.getString());
+    const char*time = doc2["sysTime2"];
+    Serial.printf("当前时间:%s\r\n",time);
+    }
+    http2.end();
+  }
 }
 
 //获取哔哩哔哩粉丝数
@@ -32,9 +41,9 @@ void getBiliBiliFollower(){
     Serial.printf("\r\nhttp get code:%d \r\n",httpCode);
     if(httpCode = HTTP_CODE_OK){
       String resBuff = http.getString();
-      Serial.println(resBuff);
+      // Serial.println(resBuff);
       deserializeJson(doc,resBuff);
-      long follower = doc["data"]["follower"];
+      long  follower = doc["data"]["follower"];
       Serial.printf("Follower:%d\r\n",follower); 
     }
     else{
@@ -57,7 +66,7 @@ void getweather(){
     //Serial.printf("\r\nhttp get code:%d \r\n",httpCode);
     if(httpCode = HTTP_CODE_OK){
       String resBuff1 = http1.getString();
-      Serial.println(resBuff1 + "\r\n");
+      // Serial.println(resBuff1 + "\r\n");
       deserializeJson(doc1,resBuff1);
       const char*cid = doc1["HeWeather6"][0]["basic"]["cid"];
       const char*location = doc1["HeWeather6"][0]["basic"]["location"];
@@ -99,6 +108,16 @@ void getweather(){
   delay(10000);//十秒获取一次
 }
 
+void setup() {
+/*   WiFi.softAP("ESP32_WiFi","asdfghjkl"); */
+  Serial.begin(115200);
+  Serial.printf("connecting.. ");
+  WiFi_Connect();
+  Serial.println("WiFi connected");
+  Serial.println("IP address:");
+  Serial.println(WiFi.localIP());
+}
+
 void loop() {
   //WiFi断线重连
   if(WiFi.status() != WL_CONNECTED){
@@ -111,4 +130,5 @@ void loop() {
   }
   getBiliBiliFollower();
   getweather();
+  getTime();
 }
