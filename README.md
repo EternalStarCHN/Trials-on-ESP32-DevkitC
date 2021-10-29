@@ -24,4 +24,4 @@ board_build.partitions = default_16MB.csv
 + TCS34725
 + ...  
 # 许可证
-None-sensor-BLDCM is licensed under [GPL-3.0 License](https://github.com/EternalStarCHN/Trials-on-ESP32-DevkitC/blob/main/LICENSE).
+Trials-on-ESP32-DevkitC is licensed under [GPL-3.0 License](https://github.com/EternalStarCHN/Trials-on-ESP32-DevkitC/blob/main/LICENSE).
